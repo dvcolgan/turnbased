@@ -36,7 +36,7 @@
 {% endblock %}
 
 {% block game_toolbar %}
-<div class="navbar-btn btn-group action-buttons" data-bind="radio: unitAction">
+<div class="navbar-btn btn-group action-buttons" style="margin-left: 5px" data-bind="radio: unitAction">
     <!-- ko if: unitAction() === 'initial' -->
     <button class="btn btn-success" type="button" data-bind="css: {active: unitAction() == 'initial'}" data-value="initial"><img src="{{ STATIC_URL }}images/place-icon.png" /> Initial Placement</button>
     <!-- /ko -->
@@ -77,6 +77,9 @@
     
     <button class="btn btn-success" type="button" data-bind="css: {active: unitAction() == 'place'}" data-value="place"><img src="{{ STATIC_URL }}images/place-icon.png" /> Place Unit <span data-bind="text: '(' + unplacedUnits() + ')'"></span></button>
     <button class="btn btn-success" type="button" data-bind="css: {active: unitAction() == 'remove'}" data-value="remove"><img src="{{ STATIC_URL }}images/remove-icon.png"/> Remove Unit</button>
+
+    <button class="btn btn-success" type="button" data-bind="css: {active: unitAction() == 'place20'}" data-value="place20"><img src="{{ STATIC_URL }}images/place-icon.png"/> Place 20 Units</button>
+    <button class="btn btn-success" type="button" data-bind="css: {active: unitAction() == 'remove20'}" data-value="remove20"><img src="{{ STATIC_URL }}images/remove-icon.png"/> Remove 20 Units</button>
     <button class="btn btn-success" type="button" data-bind="css: {active: unitAction() == 'settle'}" data-value="settle"><img src="{{ STATIC_URL }}images/settle-icon.png"/> Settle Units</button>
     <!-- /ko -->
 

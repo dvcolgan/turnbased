@@ -254,6 +254,74 @@ GAME = {
               });
             }
           }
+        } else if (vm.unitAction() === 'place20') {
+            if (vm.unplacedUnits() > 0) {
+              canPlace = false;
+              if (square.owner() === vm.accountID) {
+                canPlace = true;
+              } else {
+                other = vm.findSquare(square.col - 1, square.row);
+                if (other && other.owner() === vm.accountID) {
+                  canPlace = true;
+                } else {
+                  other = vm.findSquare(square.col + 1, square.row);
+                  if (other && other.owner() === vm.accountID) {
+                    canPlace = true;
+                  } else {
+                    other = vm.findSquare(square.col, square.row - 1);
+                    if (other && other.owner() === vm.accountID) {
+                      canPlace = true;
+                    } else {
+                      other = vm.findSquare(square.col, square.row + 1);
+                      if (other && other.owner() === vm.accountID) {
+                        canPlace = true;
+                      }
+                    }
+                  }
+                }
+              }
+              if (!canPlace) {
+                alert('You can only place units on a square you own or adjacent to a square you own.');
+                return;
+              }
+              found = false;
+              numToPlace = 20;
+              if (vm.unplacedUnits() < 20) {
+                numToPlace = vm.unplacedUnits();
+              }
+              _ref = square.units();
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                unit = _ref[_i];
+                if (unit.owner === vm.accountID) {
+                  if (unit.amount() + numToPlace > 20) {
+                    numToPlace -= (unit.amount() + numToPlace) - 20;
+                  }
+                  unit.amount(unit.amount() + numToPlace);
+                  vm.unplacedUnits(vm.unplacedUnits() - numToPlace);
+                  found = true;
+                  break;
+                }
+              }
+              if (!found) {
+                square.units.push({
+                  owner: vm.accountID,
+                  ownerColor: vm.accountColor,
+                  square: square.id,
+                  amount: ko.observable(numToPlace),
+                  last_turn_amount: 0
+                });
+                vm.unplacedUnits(vm.unplacedUnits() - numToPlace);
+              }
+            }
+        } else if (vm.unitAction() === 'remove20') {
+          for (i = _j = 0, _ref1 = square.units().length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+            unit = square.units()[i];
+            if (unit.owner === vm.accountID) {
+              vm.unplacedUnits(vm.unplacedUnits() + unit.amount());
+              square.units.splice(i, 1);
+              break;
+            }
+          }
         } else if (vm.unitAction() === 'remove') {
           _results = [];
           for (i = _l = 0, _ref1 = square.units().length; 0 <= _ref1 ? _l < _ref1 : _l > _ref1; i = 0 <= _ref1 ? ++_l : --_l) {

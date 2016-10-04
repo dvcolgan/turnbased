@@ -23,7 +23,6 @@
     <div class="navbar navbar-inverse">
         {% if request.user.is_authenticated %}
         <a class="navbar-brand" href="{% url 'game' %}">Turn Based: The Game</a>
-        <a href="{% url 'game' %}">{{ player_count }} players on turn {{ day_counter }}</a>
         {% else %}
         <a class="navbar-brand" href="{% url 'home' %}">Turn Based: The Game</a>
         <a href="{% url 'create-account' %}">Join {{ player_count }} players on turn {{ day_counter }}</a>
@@ -33,7 +32,7 @@
             {% if request.user.is_authenticated %}
             <li><a href="{% url 'how-to-play' %}">How to Play</a></li>
             <li><a href="{% url 'messages' %}">Messages</a></li>
-            <li><a href="{% url 'settings' %}">Account Settings</a></li>
+            <li><a href="{% url 'settings' %}">Settings</a></li>
             <li><a href="{% url 'logout' %}">Log Out</a></li>
             {% else %}
             <li><a href="{% url 'how-to-play' %}">How to Play</a></li>

@@ -229,6 +229,51 @@ class Square(models.Model):
             else:
                 raise InvalidPlacementException()
 
+    def place_unit_20(self, account):
+        if account.unplaced_units > 0:
+            num_to_place = 20
+            if account.unplaced_units < 20:
+                num_to_place = account.unplaced_units
+            # Only allow placing on or adjacent to your own square
+            can_place = False
+            if self.owner == account:
+                can_place = True
+
+            else:
+                square = get_object_or_None(Square, col=self.col-1, row=self.row)
+                if square != None and square.owner == account:
+                    can_place = True
+
+                else:
+                    square = get_object_or_None(Square, col=self.col+1, row=self.row)
+                    if square != None and square.owner == account:
+                        can_place = True
+
+                    else:
+                        square = get_object_or_None(Square, col=self.col, row=self.row-1)
+                        if square != None and square.owner == account:
+                            can_place = True
+
+                        else:
+                            square = get_object_or_None(Square, col=self.col, row=self.row+1)
+                            if square != None and square.owner == account:
+                                can_place = True
+
+            if can_place:
+                unit = get_object_or_None(Unit, square=self, owner=account)
+                if unit:
+                    if unit.amount + num_to_place > 20:
+                        num_to_place -= (unit.amount + num_to_place) - 20
+                    unit.amount += num_to_place
+                    unit.save()
+                else:
+                    unit = Unit(square=self, owner=account, amount=num_to_place)
+                    unit.save()
+                account.unplaced_units -= num_to_place
+                account.save()
+            else:
+                raise InvalidPlacementException()
+
     def remove_unit(self, account):
         unit = get_object_or_None(Unit, square=self, owner=account)
         if unit:
@@ -239,6 +284,13 @@ class Square(models.Model):
                 unit.save()
             account.unplaced_units += 1
             account.save()
+
+    def remove_unit_20(self, account):
+        unit = get_object_or_None(Unit, square=self, owner=account)
+        if unit:
+            account.unplaced_units += unit.amount
+            account.save()
+            unit.delete()
 
     def settle_units(self, account):
         unit = get_object_or_None(Unit, square=self, owner=account)

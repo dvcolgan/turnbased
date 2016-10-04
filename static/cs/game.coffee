@@ -281,6 +281,69 @@ GAME =
                                 last_turn_amount: 0 # This may take some work to get working
                             })
 
+                else if vm.unitAction() == 'place20'
+                    if vm.unplacedUnits() > 0
+
+                        canPlace = false
+                        if square.owner() == vm.accountID
+                            canPlace = true
+                        else
+                            other = vm.findSquare(square.col-1, square.row)
+                            if other and other.owner() == vm.accountID
+                                canPlace = true
+
+                            else
+                                other = vm.findSquare(square.col+1, square.row)
+                                if other and other.owner() == vm.accountID
+                                    canPlace = true
+
+                                else
+                                    other = vm.findSquare(square.col, square.row-1)
+                                    if other and other.owner() == vm.accountID
+                                        canPlace = true
+
+                                    else
+                                        other = vm.findSquare(square.col, square.row+1)
+                                        if other and other.owner() == vm.accountID
+                                            canPlace = true
+
+                        if not canPlace
+                            alert('You can only place units on a square you own or adjacent to a square you own.')
+                            return
+
+                        # If there is already a unit of this color on this square, update the amount,
+                        # otherwise add the whole unit
+                        found = false
+                        numToPlace = 20
+                        if vm.unplacedUnits() < 20
+                            numToPlace = vm.unplacedUnits()
+                        for unit in square.units()
+                            if unit.owner == vm.accountID
+
+                                if unit.amount() + numToPlace > 20:
+                                    numToPlace -= (unit.amount() + numToPlace) - 20
+                                unit.amount(unit.amount()+numToPlace)
+                                vm.unplacedUnits(vm.unplacedUnits()-numToPlace)
+                                found = true
+                                break
+                        if not found
+                            square.units.push({
+                                owner: vm.accountID
+                                ownerColor: vm.accountColor
+                                square: square.id
+                                amount: ko.observable(numToPlace)
+                                last_turn_amount: 0 # This may take some work to get working
+                            })
+                            vm.unplacedUnits(vm.unplacedUnits()-numToPlace)
+
+                else if vm.unitAction() == 'remove20'
+                    for i in [0...square.units().length]
+                        unit = square.units()[i]
+                        if unit.owner == vm.accountID
+                            vm.unplacedUnits(vm.unplacedUnits()+unit.amount())
+                            square.units.splice(i, 1)
+                            break
+
 
                 else if vm.unitAction() == 'remove'
                     for i in [0...square.units().length]

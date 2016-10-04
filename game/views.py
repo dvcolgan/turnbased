@@ -201,8 +201,19 @@ def api_square_unit_action(request, col, row, action):
         except InvalidPlacementException:
             return Response({'error': 'You can only place units on a square you own or adjacent to a square you own.'}, status=status.HTTP_400_BAD_REQUEST)
 
+    elif action == 'place20':
+        try:
+            square.place_unit_20(request.user)
+            return Response({})
+        except InvalidPlacementException:
+            return Response({'error': 'You can only place units on a square you own or adjacent to a square you own.'}, status=status.HTTP_400_BAD_REQUEST)
+
     elif action == 'remove':
         square.remove_unit(request.user)
+        return Response({})
+
+    elif action == 'remove20':
+        square.remove_unit_20(request.user)
         return Response({})
 
     elif action == 'settle':
